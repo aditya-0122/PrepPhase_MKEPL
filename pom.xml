@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.aditya-0122</groupId>
     <artifactId>PrepPhase_MKEPL</artifactId>
-    <version>0.3.6</version>
+    <version>0.3.7</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -40,5 +40,5 @@
             <name>GitHub Packages</name>
             <url>https://maven.pkg.github.com/aditya-0122/PrepPhase_MKEPL</url>
         </repository>
-    </distributionManagement>
+</distributionManagement>
 </project>
