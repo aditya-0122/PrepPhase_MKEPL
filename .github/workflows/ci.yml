@@ -2,11 +2,9 @@ name: Java CI and Continuous Inspection
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build-and-inspect:
@@ -17,11 +15,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java
+      - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 17
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
 
       - name: Build and Test
         run: mvn clean verify
@@ -34,8 +33,6 @@ jobs:
           -Dsonar.organization=aditya-0122 \
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
-      # Solusi: Pastikan Quality Gate check menggunakan SONAR_TOKEN 
-      # dan berjalan setelah scan sukses
       - name: SonarCloud Quality Gate Check
         uses: sonarsource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
