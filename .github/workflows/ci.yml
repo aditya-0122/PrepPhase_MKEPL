@@ -56,5 +56,5 @@ jobs:
       - name: Publish to GitHub Packages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SONAR_TOKEN }} # Token dengan akses write ke GitHub Packages
         run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml -DskipTests
