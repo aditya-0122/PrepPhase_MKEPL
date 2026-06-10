@@ -1,19 +1,21 @@
-name: Java CI
+name: Java CI and Continuous Inspection
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
-
+  build-and-inspect:
     runs-on: ubuntu-latest
-
     steps:
-
       - name: Checkout Source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Wajib untuk analisis histori penuh SonarCloud
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -21,10 +23,22 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      # Continuous Integration
-      - name: Compile Project
-        run: mvn clean compile
+      # 1. Continuous Integration & Testing
+      - name: Build and Test
+        run: mvn clean verify # 'verify' sudah mencakup compile dan test
 
-      # Continuous Testing
-      - name: Run Tests
-        run: mvn test
+      # 2. Continuous Inspection (Analisis Statis)
+      - name: SonarCloud Scan
+        run: |
+          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.projectKey=aditya-0122_PrepPhase_MKEPL \
+          -Dsonar.organization=aditya-0122 \
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+
+      # 3. Quality Gate (Syarat agar pipeline gagal jika kualitas buruk)
+      - name: SonarCloud Quality Gate Check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
